@@ -1,6 +1,8 @@
 import pandas as pd
 import numpy as np
 import os
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 TRAIN_DF_FILEPATH = os.path.join("Data","train.csv")
 
@@ -36,3 +38,15 @@ def Preprocessing(df):
     return concat_df
 
 preprocessed_train_df = Preprocessing(train_df)
+
+preprocessed_train_df.corr()
+
+sns.histplot(preprocessed_train_df["curvature"],kde = True)
+plt.show()
+
+sns.histplot(preprocessed_train_df["speed_limit"],kde = True)
+plt.show()
+
+sns.histplot(preprocessed_train_df["num_reported_accidents"],kde = True)
+plt.show()
+

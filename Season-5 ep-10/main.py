@@ -3,6 +3,8 @@ import numpy as np
 import os
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn.model_selection import train_test_split
+import xgboost as xgb
 
 TRAIN_DF_FILEPATH = os.path.join("Data","train.csv")
 
@@ -49,4 +51,21 @@ plt.show()
 
 sns.histplot(preprocessed_train_df["num_reported_accidents"],kde = True)
 plt.show()
+
+preprocessed_train_df.head()
+
+X = preprocessed_train_df.drop(columns = ["accident_risk"])
+y = preprocessed_train_df["accident_risk"]
+
+X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.2,shuffle=False,random_state=47)
+dtrain = xgb.DMatrix(data = X_train,label = y_train)
+
+reg = xgb.XGBRegressor(random_state= 47,booster = "gblinear")
+param_grid = {
+    "n_estimators":[100,300,500],
+    "max_depth":[4,6,8],
+    "learning_rate":[0.1,0.01,0.2],
+    "colsample_bytree":[0.7,0.85,1.0],
+    "subsample":[0.7,0.85,1.0]
+}
 

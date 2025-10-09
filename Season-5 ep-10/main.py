@@ -7,7 +7,10 @@ from sklearn.model_selection import train_test_split,RandomizedSearchCV
 import xgboost as xgb
 
 TRAIN_DF_FILEPATH = os.path.join("Data","train.csv")
+TEST_DF_FILEPATH = os.path.join("Data","test.csv")
+SAMPLE_SUB_DF_FILEPATH = os.path.join("Data","sample_submission.csv")
 MODEL_FILEPATH = os.path.join("experiments","kps-s5-e10-reg-gbtree-rmse.json")
+SUBMISSION_FILEPATH = os.path.join("experiments","kps-s5-e10-reg-gbtree-rmse.csv")
 
 train_df = pd.read_csv(TRAIN_DF_FILEPATH)
 train_df.set_index("id",inplace=True)
@@ -115,3 +118,20 @@ reg.save_model(MODEL_FILEPATH)
 
 model = xgb.XGBRegressor()
 model.load_model(MODEL_FILEPATH)
+
+test_df = pd.read_csv(TEST_DF_FILEPATH)
+test_df.set_index("id",inplace=True)
+test_df.head()
+
+test_df.isnull().sum()
+
+preprocessed_test_df = Preprocessing(test_df)
+preprocessed_test_df.head()
+
+pred = model.predict(preprocessed_test_df)
+
+sample_df = pd.read_csv(SAMPLE_SUB_DF_FILEPATH)
+sample_df["accident_risk"] = pred
+sample_df.head()
+
+sample_df.to_csv(SUBMISSION_FILEPATH)

@@ -3,6 +3,7 @@ import numpy as np
 import os 
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn.preprocessing import MinMaxScaler
 
 TRAIN_DF_FILEPATH = os.path.join("Data","train.csv")
 TEST_DF_FILEPATH = os.path.join("Data","test.csv")
@@ -29,4 +30,18 @@ sns.histplot(train_df["TrackDurationMs"],kde = True)
 plt.plot()
 sns.histplot(train_df["Energy"],kde = True)
 plt.plot()
+
+
+# TrackDurationMs LivePerformanceLikelihood RhythmScore AudioLoudness
+
+
+features = train_df[["TrackDurationMs","LivePerformanceLikelihood","RhythmScore","AudioLoudness"]]
+
+def Preprocessing(df):
+    df = df.copy()
+    scaler = MinMaxScaler()
+    scaled_features = scaler.fit_transform(df)
+    return scaled_features
+
+new_features = Preprocessing(features)
 
